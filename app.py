@@ -7,7 +7,7 @@ import yfinance as yf
 from datetime import datetime
 
 # API key
-# stock_screener = StockScreener(api_key='NEWS_API_KEY')
+stock_screener = StockScreener(api_key='ADD_YOUR_NEWS_API_KEY')
 
 app = Flask(__name__)
 
