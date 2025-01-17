@@ -10,6 +10,7 @@ import yfinance as yf
 from datetime import datetime
 import sqlite3
 import os
+import nltk
 from werkzeug.security import generate_password_hash
 from controllers.auth_controller import AuthController
 from controllers.history_controller import HistoryController
@@ -20,6 +21,15 @@ from dotenv import load_dotenv
 load_dotenv()
 screener_to_retrieve_data = StockScreener(api_key=os.getenv("API_KEY"))
 app = Flask(__name__)
+
+# Download vader_lexicon if not already downloaded
+try:
+    nltk.data.find('sentiment/vader_lexicon')
+except LookupError:
+    nltk.download('vader_lexicon', download_dir='/opt/render/project/src/nltk_data')
+
+# Append the path to nltk_data for the app to use
+nltk.data.path.append('/opt/render/project/src/nltk_data')
 
 # Configure Flask-Mail
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Using Gmail's SMTP server
