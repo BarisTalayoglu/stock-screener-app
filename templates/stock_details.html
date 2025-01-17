@@ -4,150 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Details - {{ ticker }}</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        h1 {
-            color: #007bff;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        h2 {
-            color: #555;
-            margin-top: 30px;
-            font-size: 1.5em;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 5px;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-            color: #555;
-            font-weight: bold;
-        }
-        .section {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #ffffff;
-        }
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 15px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .back-link:hover {
-            background-color: #0056b3;
-        }
-        p {
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stockscreener.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='image/icon.ico') }}" type="image/x-icon">
 </head>
 <body>
+    <!-- Header -->
     <header>
-        <h1>Stock Details for {{ ticker }}</h1>
+        <nav class="navbar">
+            <div class="logo-container">
+                <a href="{{ url_for('stock_search') }}"><img src="{{ url_for('static', filename='image/logo.png') }}" alt="Logo" class="logo"></a>
+                <a href="{{ url_for('stock_search') }}" class="nav-title">Stock Screener</a>
+            </div>
+            <div class="menu-container">
+                <a href="{{ url_for('stock_search') }}" class="menu-item">Stock Search</a>
+                <a href="{{ url_for('index') }}" class="menu-item">Stock Screener</a>
+                <a href="{{ url_for('learn_more') }}" class="menu-item">Learn More</a>
+            </div>
+            {% include 'partials/logout.html' %}
+        </nav>
     </header>
 
-    <div class="section">
-        <h2>Stock Overview</h2>
-        <table>
-            <tbody>
-                <tr><td>Full Name:</td><td>{{ full_name }}</td></tr>
-                <tr><td>Industry:</td><td>{{ industry }}</td></tr>
-                <tr><td>Sector:</td><td>{{ sector }}</td></tr>
-                <tr><td>Current Price:</td><td>{{ current_price | round(3) }}</td></tr>
-                <tr><td>Market Cap:</td><td>{{ market_cap }}</td></tr>
-                <tr><td>P/E Ratio:</td><td>{{ pe_ratio }}</td></tr>
-                <tr><td>Dividend Yield:</td><td>{{ dividend_yield | round(3)}}</td></tr>
-                <tr><td>Volume:</td><td>{{ volume }}</td></tr>
+    <!-- Main Content -->
+    <main>
+        <h1>Stock Details for {{ ticker }}</h1>
 
-                <tr><td>Change (%):{{ change_percent | default('0') | float | round(2) }}%</td></tr>
-            </tbody>
-        </table>
-    </div>
+        <div class="section">
+             <h2>Stock Overview</h2>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Full Name: </td>
+                        <td>{{ full_name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Industry: </td>
+                        <td>{{ industry }}</td>
+                    </tr>
+                    <tr>
+                        <td>Sector: </td>
+                        <td>{{ sector }}</td>
+                    </tr>
+                    <tr>
+                        <td>Current Price: </td>
+                        <td>{{ current_price | round(3) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Market Cap: <a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#market-cap" class="info-link">  ?</a></td>
+                        <td>{{ market_cap }}</td>
+                    </tr>
+                    <tr>
+                        <td>P/E Ratio: <a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#pe-ratio" class="info-link">  ?</a></td>
+                        <td>{{ pe_ratio }}</td>
+                    </tr>
+                    <tr>
+                        <td>Dividend Yield: <a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#dividend-yield" class="info-link">  ?</a></td>
+                        <td>{{ dividend_yield | round(3)}}</td>
+                    </tr>
+                    <tr>
+                        <td>Volume: <a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#volume" class="info-link">  ?</a></td>
+                        <td>{{ volume }}</td>
+                    </tr>
+                    <tr>
+                        <td>Change (%): <a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#change-percent" class="info-link">  ?</a></td>
+                        <td>{{ change_percent | default('0') | float | round(2) }}%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-    <div class="section">
-        <h2>Price Chart</h2>
-        <img src="data:image/png;base64,{{ price_chart_image }}" alt="Price Chart">
-        <img src="data:image/png;base64,{{ rsi_chart_image }}" alt="RSI Chart">
-        <img src="data:image/png;base64,{{ macd_chart_image }}" alt="MACD Chart">
-    </div>    <h2>Fibonacci Levels Chart</h2>
-    <img src="data:image/png;base64,{{ fibonacci_chart_image }}" alt="Fibonacci Levels Chart">
+        <div class="section">
+            <h2>Price Chart</h2>
+            <img src="data:image/png;base64,{{ price_chart_image }}" alt="Price Chart">
+            <img src="data:image/png;base64,{{ rsi_chart_image }}" alt="RSI Chart">
+            <img src="data:image/png;base64,{{ macd_chart_image }}" alt="MACD Chart">
+            <img src="data:image/png;base64,{{ fibonacci_chart_image }}" alt="Fibonacci Levels Chart">
+        </div>
 
-    <div class="section">
-        <h2>Technical Indicators</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Indicator</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>RSI</td><td>{{ technical_indicators['RSI'].iloc[-1] | round(3)}}</td></tr>
-                <tr><td>SMA (20)</td><td>{{ technical_indicators['SMA'].iloc[-1] | round(3)}}</td></tr>
-                <tr><td>MACD</td><td>{{ technical_indicators['MACD'].iloc[-1] | round(3)}}</td></tr>
-                <tr><td>Bollinger Bands (High)</td><td>{{ technical_indicators['BB_High'].iloc[-1] | round(3)}}</td></tr>
-                <tr><td>Bollinger Bands (Low)</td><td>{{ technical_indicators['BB_Low'].iloc[-1] | round(3)}}</td></tr>
-                <tr><td>Ichimoku Cloud (Tenkan-sen)</td><td>{{ technical_indicators['tenkan_sen'].iloc[-1] | round(3)}}</td></tr>
-                <tr><td>Ichimoku Cloud (Kijun-sen)</td><td>{{ technical_indicators['kijun_sen'].iloc[-1] | round(3)}}</td></tr>
-                <tr><td>Ichimoku Cloud (Senkou Span A)</td><td>{{ technical_indicators['senkou_span_a'].iloc[-1] | round(3)}}</td></tr>
-                <tr><td>Ichimoku Cloud (Senkou Span B)</td><td>{{ technical_indicators['senkou_span_b'].iloc[-1] | round(3)}}</td></tr>
-            </tbody>
-        </table>
-    </div>
+        <div class="section">
+            <h2>Technical Indicators</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Indicator</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>RSI<a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#rsi" class="info-link">  ?</a></td><td>{{ technical_indicators['RSI'].iloc[-1] | round(3)}}</td></tr>
+                    <tr><td>SMA (20)<a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#sma" class="info-link">  ?</a></td><td>{{ technical_indicators['SMA'].iloc[-1] | round(3)}}</td></tr>
+                    <tr><td>MACD<a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#macd" class="info-link">  ?</a></td><td>{{ technical_indicators['MACD'].iloc[-1] | round(3)}}</td></tr>
+                    <tr><td>Bollinger Bands (High)<a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#bollinger-high" class="info-link">  ?</a></td><td>{{ technical_indicators['BB_High'].iloc[-1] | round(3)}}</td></tr>
+                    <tr><td>Bollinger Bands (Low)<a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#bollinger-low" class="info-link">  ?</a></td><td>{{ technical_indicators['BB_Low'].iloc[-1] | round(3)}}</td></tr>
+                    <tr><td>Ichimoku Cloud (Tenkan-sen)<a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#tenkan-sen" class="info-link">  ?</a></td><td>{{ technical_indicators['tenkan_sen'].iloc[-1] | round(3)}}</td></tr>
+                    <tr><td>Ichimoku Cloud (Kijun-sen)<a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#kijun-sen" class="info-link">  ?</a></td><td>{{ technical_indicators['kijun_sen'].iloc[-1] | round(3)}}</td></tr>
+                    <tr><td>Ichimoku Cloud (Senkou Span A)<a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#senkou-span-a" class="info-link">  ?</a></td><td>{{ technical_indicators['senkou_span_a'].iloc[-1] | round(3)}}</td></tr>
+                    <tr><td>Ichimoku Cloud (Senkou Span B)<a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#senkou-span-b" class="info-link">  ?</a></td><td>{{ technical_indicators['senkou_span_b'].iloc[-1] | round(3)}}</td></tr>
 
-    <div class="section">
-        <h2>Performance Metrics</h2>
-        <table>
-            <tbody>
-                <tr><td>Daily Return:</td><td>{{ daily_return | round(2) }}%</td></tr>
-                <tr><td>52-Week High:</td><td>{{ fifty_two_week_high }}</td></tr>
-                <tr><td>52-Week Low:</td><td>{{ fifty_two_week_low }}</td></tr>
-                <tr><td>Beta:</td><td>{{ beta }}</td></tr>
-                <tr><td>Analyst Rating:</td><td>{{ analyst_rating }}</td></tr>
-            </tbody>
-        </table>
-    </div>
+                </tbody>
+            </table>
+        </div>
 
-    <p>View more details on <a href="https://www.tradingview.com/symbols/{{ ticker }}/" target="_blank">TradingView</a>.</p>
-    <a class="back-link" href="{{ url_for('stock_search') }}">Go Back</a>
+          <div class="section">
+            <h2>Performance Metrics </h2>
+            <table>
+                <tbody>
+                    <tr><td>Daily Return:<a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#daily-return" class="info-link">  ?</a></td><td>{{ daily_return | round(2) }}%</td></tr>
+                    <tr><td>52-Week High:<a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#week-high" class="info-link">  ?</a></td><td>{{ fifty_two_week_high }}</td></tr>
+                    <tr><td>52-Week Low:<a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#week-low" class="info-link">  ?</a></td><td>{{ fifty_two_week_low }}</td></tr>
+                    <tr><td>Beta:<a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#beta" class="info-link">  ?</a></td><td>{{ beta }}</td></tr>
+                    <tr><td>Analyst Rating:<a style="color:#545454;" title="Click me to learn more" href="{{ url_for('learn_more') }}#analyst-rating" class="info-link">  ?</a></td><td>{{ analyst_rating }}</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+         <p>View more details on <a href="https://www.tradingview.com/symbols/{{ ticker }}/" target="_blank">TradingView</a>.</p>
+         <a class="back-button" href="{{ url_for('stock_search') }}">Go Back</a>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2024 Stock Screener. All Rights Reserved.</p>
+    </footer>
 </body>
 </html>

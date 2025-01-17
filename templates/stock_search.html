@@ -4,100 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Search</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f4f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            text-align: center;
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            width: 80%;
-            max-width: 400px;
-        }
-        h1 {
-            color: #007bff;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: border-color 0.3s;
-        }
-        input[type="text"]:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .alert {
-            display: none;
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 10px;
-            margin-top: 20px;
-            border-radius: 5px;
-            font-size: 0.9em;
-        }
-        #loadingMessage {
-            display: none;
-            color: #007bff;
-            font-size: 1.1em;
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stocksearch.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>Search for Stock</h1>
-        <form id="searchForm">
-            <input type="text" id="tickerInput" placeholder="Enter stock ticker (e.g., AAPL)" required>
-            <button type="submit">Search</button>
-        </form>
-        <div id="alertBox" class="alert">
-            Stock not available! Please try a valid ticker symbol.
-        </div>
-        <p id="loadingMessage">Fetching stock data, please wait...</p>
 
-        <p>Or go to the <a href="{{ url_for('index') }}" class="button">Stock Screener</a>.</p>
-    </div>
+    <header>
+        <nav class="navbar">
+            <div class="logo-container">
+                <a href="{{ url_for('stock_search') }}"><img src="{{ url_for('static', filename='image/logo.png') }}" alt="Logo" class="logo"></a>
+                <a href="{{ url_for('stock_search') }}" class="nav-title">Stock Screener</a>
+            </div>
+            <div class="menu-container">
+                <a href="{{ url_for('stock_search') }}" class="menu-item">Stock Search</a>
+                <a href="{{ url_for('index') }}" class="menu-item">Stock Screener</a>
+                <a href="{{ url_for('learn_more') }}" class="menu-item">Learn More</a>
+                {% include 'partials/logout.html' %}
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="hero">
+                <h1>Find Your Next Investment</h1>
+                <form id="searchForm">
+                    <div class="search-container">
+                        <input type="text" id="tickerInput" class="search-bar" placeholder="Search for stocks, ETFs" required>
+                        <button type="submit">Search</button>
+                    </div>
+                </form>
+                <div id="alertBox" class="alert">
+                    Stock not available! Please try a valid ticker symbol.
+                </div>
+                <p id="loadingMessage">Fetching stock data, please wait...</p>
+                <p>Or go to the <a href="{{ url_for('index') }}">Stock Screener</a></p>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-social">
+            <span>©2024 Stock Screener</span>
+        </div>
+    </footer>
 
     <script>
         document.getElementById('searchForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent form submission
             const ticker = document.getElementById('tickerInput').value.trim().toUpperCase();
-
-            // Show the loading message
             const loadingMessage = document.getElementById('loadingMessage');
             loadingMessage.style.display = 'block';
-
-            // Attempt to fetch the stock details page
             fetch(`/stock/${ticker}`)
                 .then(response => {
                     if (response.ok) {
@@ -105,24 +64,18 @@
                     } else {
                         loadingMessage.style.display = 'none';
                         const alertBox = document.getElementById('alertBox');
-                        alertBox.style.display = 'block'; // Show alert
-
-                        setTimeout(() => {
-                            alertBox.style.display = 'none';
-                        }, 5000); // Hide alert after 5 seconds
+                        alertBox.style.display = 'block';
+                        setTimeout(() => alertBox.style.display = 'none', 5000);
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching the stock details page:', error);
-                    loadingMessage.style.display = 'none'; // Hide loading message if there's an error
+                    loadingMessage.style.display = 'none';
                     const alertBox = document.getElementById('alertBox');
-                    alertBox.style.display = 'block'; // Show alert if there's an error
-                    setTimeout(() => {
-                        alertBox.style.display = 'none';
-                    }, 5000); // Hide alert after 5 seconds
+                    alertBox.style.display = 'block';
+                    setTimeout(() => alertBox.style.display = 'none', 5000);
                 });
         });
     </script>
-
 </body>
 </html>

@@ -4,6 +4,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import numpy as np
 from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor
+import time
 
 
 class StockScreener:
@@ -57,6 +58,10 @@ class StockScreener:
         return annualized_volatility if not np.isnan(annualized_volatility) else 0
 
     def calculate_indicators(self, ticker):
+        """Calculate indicators for a specific stock ticker."""
+        time.sleep(1)  # Add a delay here to avoid hitting the rate limit
+        # Existing logic for calculating indicators
+
         """Calculate indicators for a single stock."""
         stock_info = yf.Ticker(ticker).info
         historical_data = yf.Ticker(ticker).history(period="5d")  # Fetch 5 days of data
@@ -104,22 +109,34 @@ class StockScreener:
         }
 
     def fetch_stock_data(self, tickers):
-        """Fetch stock data for provided tickers using multithreading."""
+        """Fetch stock data for provided tickers with a delay after every 50 tickers."""
         stock_data = []
+        batch_size = 50  # Number of tickers to process before adding a delay
+        delay = 3  # Delay duration in seconds
 
-        with ThreadPoolExecutor() as executor:
-            futures = {executor.submit(self.calculate_indicators, ticker): ticker for ticker in tickers}
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            futures = {executor.submit(self.calculate_indicators, ticker): ticker for ticker in tickers[:50]}
+
+            # Counter to track processed tickers
+            processed_count = 0
+
             for future in futures:
                 ticker = futures[future]
                 try:
                     result = future.result()
                     if result:
-                        print(f"Fetched data for {ticker}: {result}")  # Debugging output
+                        print(f"Fetched data for {ticker}: {result}")
                         stock_data.append(result)
+                    processed_count += 1
+
+                    # Add delay after every batch of 50 tickers
+                    if processed_count % batch_size == 0:
+                        print(f"Processed {processed_count} tickers. Adding a {delay}-second delay...")
+                        time.sleep(delay)
                 except Exception as e:
                     print(f"Error processing ticker {ticker}: {e}")
 
-        print(f"Stock data fetched: {stock_data}")  # Print the entire list of stock data
+        print(f"Stock data fetched: {stock_data}")
         return stock_data
 
     def analyze_sentiment(self, subject):

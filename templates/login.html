@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Stock Screener</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Lato", sans-serif;
+        }
+
+
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            object-fit: cover;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff6600;
+            margin-bottom: 30px;
+        }
+
+        form {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-sizing: border-box;
+        }
+
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ff6600;
+        }
+
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #555;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: #ff6600;
+            outline: none;
+        }
+
+
+        button {
+            width: 100%;
+            background-color: #ff6600;
+            color: white;
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #e65c00;
+        }
+
+        /* Flash mesajları */
+        .flashes {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+            background:red;
+        }
+
+        .flashes li {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            color: white;
+            display: inline-block;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .flashes .success {
+            background-color: #4CAF50; /* Green */
+        }
+
+        .flashes .danger {
+            background-color: #f44336; /* Red */
+        }
+
+        p {
+            text-align: center;
+            color: #ccc;
+        }
+
+        p a {
+            color: #ff6600;
+            text-decoration: none;
+        }
+
+        p a:hover {
+            color: #e65c00;
+        }
+
+
+        .flashes .logout {
+            background-color: #f44336;
+            animation: fadeOut 5s forwards;
+        }
+
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <img src="https://img.freepik.com/premium-photo/3d-black-chart-finance-black-background_768719-330.jpg" alt="Background Image" class="background-image" />
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    {% if category == 'logout' %}
+                        <li class="logout">{{ message }}</li>
+                    {% else %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <h1>Login</h1>
+    <form action="/login" method="POST">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <!-- Forgot Password Link -->
+    <form action="{{ url_for('forgot_password_method') }}" method="GET" style="margin-top:20px;">
+        <p><a href="{{ url_for('forgot_password_method') }}">Forgot your password?</a></p>
+    </form>
+
+    <p>Don't have an account? <a href="/register">Register here</a>.</p>
+
+
+    <script>
+
+        window.onload = function() {
+            setTimeout(function() {
+                var logoutMessage = document.querySelector('.flashes');
+                if (logoutMessage) {
+                    logoutMessage.style.display = 'none';
+                }
+            }, 5000); // 5000ms = 5 saniye
+        };
+    </script>
+</body>
+
+</html>

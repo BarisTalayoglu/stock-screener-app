@@ -33,23 +33,27 @@ def fetch_technical_indicators(ticker):
     stock_details = fetch_stock_details(ticker)
 
     # Volume Indicators
-    stock_data['MFI'] = ta.volume.MFIIndicator(stock_data['High'], stock_data['Low'], stock_data['Close'],
-                                               stock_data['Volume']).money_flow_index()
-    stock_data['OBV'] = ta.volume.OnBalanceVolumeIndicator(stock_data['Close'],
-                                                           stock_data['Volume']).on_balance_volume()
+    # Squeeze the series to ensure it is 1D
+    stock_data['MFI'] = ta.volume.MFIIndicator(stock_data['High'].squeeze(),
+                                               stock_data['Low'].squeeze(),
+                                               stock_data['Close'].squeeze(),
+                                               stock_data['Volume'].squeeze()).money_flow_index()
+    stock_data['OBV'] = ta.volume.OnBalanceVolumeIndicator(stock_data['Close'].squeeze(),
+                                                           stock_data['Volume'].squeeze()).on_balance_volume()
 
     # Volatility Indicators
-    stock_data['ATR'] = ta.volatility.AverageTrueRange(stock_data['High'], stock_data['Low'],
-                                                       stock_data['Close']).average_true_range()
-    stock_data['BB_High'] = ta.volatility.BollingerBands(stock_data['Close']).bollinger_hband()
-    stock_data['BB_Low'] = ta.volatility.BollingerBands(stock_data['Close']).bollinger_lband()
+    stock_data['ATR'] = ta.volatility.AverageTrueRange(stock_data['High'].squeeze(),
+                                                       stock_data['Low'].squeeze(),
+                                                       stock_data['Close'].squeeze()).average_true_range()
+    stock_data['BB_High'] = ta.volatility.BollingerBands(stock_data['Close'].squeeze()).bollinger_hband()
+    stock_data['BB_Low'] = ta.volatility.BollingerBands(stock_data['Close'].squeeze()).bollinger_lband()
 
     # Trend Indicators
-    stock_data['SMA'] = ta.trend.SMAIndicator(stock_data['Close'], window=20).sma_indicator()
-    stock_data['MACD'] = ta.trend.MACD(stock_data['Close']).macd()
+    stock_data['SMA'] = ta.trend.SMAIndicator(stock_data['Close'].squeeze(), window=20).sma_indicator()
+    stock_data['MACD'] = ta.trend.MACD(stock_data['Close'].squeeze()).macd()
 
     # Momentum Indicators
-    stock_data['RSI'] = ta.momentum.RSIIndicator(stock_data['Close']).rsi()
+    stock_data['RSI'] = ta.momentum.RSIIndicator(stock_data['Close'].squeeze()).rsi()
 
     # Ichimoku Cloud Components
     high_9 = stock_data['High'].rolling(window=9).max()
@@ -67,6 +71,7 @@ def fetch_technical_indicators(ticker):
     stock_data['chikou_span'] = stock_data['Close'].shift(-26)  # Lagging Span
 
     return stock_data.tail(10), stock_details
+
 
 
 def create_stock_chart(ticker):
@@ -91,7 +96,12 @@ def create_stock_chart(ticker):
 def create_rsi_chart(ticker):
     """Create a line chart for the Relative Strength Index (RSI)."""
     stock_data = yf.download(ticker, period='1y')
-    rsi = ta.momentum.RSIIndicator(stock_data['Close']).rsi()
+
+    # Ensure 'Close' is a 1D Series (squeeze it if necessary)
+    close_prices = stock_data['Close'].squeeze()
+
+    # Now compute the RSI using the 1D Series
+    rsi = ta.momentum.RSIIndicator(close_prices).rsi()
 
     plt.figure(figsize=(10, 0.6))
     plt.plot(rsi, label='RSI', color='purple')
@@ -114,7 +124,12 @@ def create_rsi_chart(ticker):
 def create_macd_chart(ticker):
     """Create a line chart for the Moving Average Convergence Divergence (MACD)."""
     stock_data = yf.download(ticker, period='1y')
-    macd = ta.trend.MACD(stock_data['Close'])
+
+    # Ensure 'Close' is a 1D Series (squeeze it if necessary)
+    close_prices = stock_data['Close'].squeeze()
+
+    # Calculate MACD
+    macd = ta.trend.MACD(close_prices)
 
     plt.figure(figsize=(10, 0.6))
     plt.plot(macd.macd(), label='MACD', color='blue')
@@ -155,8 +170,9 @@ def create_fibonacci_chart(ticker):
     plt.figure(figsize=(10, 5))
     plt.plot(stock_data['Close'], label='Close Price', color='blue')
 
+    # Ensure each level is a scalar value, not a Series
     for level in levels:
-        plt.axhline(y=level, color='orange', linestyle='--', label=f'Fibonacci Level: {level:.2f}')
+        plt.axhline(y=level.item(), color='orange', linestyle='--', label=f'Fibonacci Level: {level.item():.2f}')
 
     plt.title(f'Fibonacci Retracement Levels for {ticker}')
     plt.xlabel('Date')
