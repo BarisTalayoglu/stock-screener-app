@@ -1,0 +1,71 @@
+/* STOCK SCREENER RESULTS CSS */
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #161b22;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h1.results-title {
+    text-align: center;
+    color: #ff7300;
+    font-size: 32px;
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table thead {
+    background-color: #ff7300;
+    color: #0d1117;
+}
+
+table th, table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+table tr:hover {
+    background-color: #252b34;
+}
+
+
+.results-link {
+    color: #ff7300;
+    text-decoration: none;
+}
+
+.results-link:hover {
+    text-decoration: underline;
+}
+
+.results-link:active {
+    color: #e56200;
+}
+
+.back-button {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #ff7300;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top: 20px;
+}
+
+.back-button:hover {
+    background-color: #e56200;
+    color: white;
+    transform: translateY(-2px);
+}

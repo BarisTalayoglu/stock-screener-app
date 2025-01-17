@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validate OTP - Stock Screener</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff6600;
+            margin-bottom: 10px;
+        }
+
+        .subheading {
+            text-align: center;
+            color: #aaa;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        form {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-container {
+            background-color: #333;
+            border: 1px solid #ff6600;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ff6600;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #666;
+            border-radius: 5px;
+            background-color: #444;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            background-color: #ff6600;
+            color: white;
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #e65c00;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .flashes {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px auto;
+            max-width: 500px;
+        }
+
+        .flashes li {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            color: white;
+        }
+
+        .flashes .success {
+            background-color: #4CAF50;
+        }
+
+        .flashes .danger {
+            background-color: #f44336;
+        }
+
+        .flashes .info {
+            background-color: #2196F3;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Validate OTP</h1>
+    <p class="subheading">Enter the OTP sent to your email to reset your password</p>
+
+    <form action="{{ url_for('validate_reset_otp_method', user_id=user_id) }}" method="POST">
+        <div class="form-container">
+            <label for="otp">Enter OTP:</label>
+            <input type="number" name="otp" id="otp" required>
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+
+            <button type="submit">Validate OTP</button>
+        </div>
+    </form>
+
+    {% if error_message %}
+        <p class="error-message">{{ error_message }}</p>
+    {% endif %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+</body>
+
+</html>
