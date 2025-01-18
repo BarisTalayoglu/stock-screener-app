@@ -22,14 +22,14 @@ load_dotenv()
 screener_to_retrieve_data = StockScreener(api_key=os.getenv("API_KEY"))
 app = Flask(__name__)
 
+NLTK_DATA_PATH = "/opt/render/project/src/nltk_data"
+nltk.data.path.append(NLTK_DATA_PATH)
+
 # Download vader_lexicon if not already downloaded
 try:
     nltk.data.find('sentiment/vader_lexicon')
 except LookupError:
-    nltk.download('vader_lexicon', download_dir='/opt/render/project/src/nltk_data')
-
-# Append the path to nltk_data for the app to use
-nltk.data.path.append('/opt/render/project/src/nltk_data')
+    nltk.download('vader_lexicon', download_dir=NLTK_DATA_PATH)
 
 # Configure Flask-Mail
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Using Gmail's SMTP server
