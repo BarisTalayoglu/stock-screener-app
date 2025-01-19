@@ -17,20 +17,23 @@ from controllers.history_controller import HistoryController
 from controllers.profile_controller import ProfileController
 from modules.otp_verification import OTPVerifier
 from dotenv import load_dotenv
+from nltk.sentiment import SentimentIntensityAnalyzer
 
 load_dotenv()
 screener_to_retrieve_data = StockScreener(api_key=os.getenv("API_KEY"))
 app = Flask(__name__)
 
+# Set the path to where the vader_lexicon.txt is located
 NLTK_DATA_PATH = "/opt/render/project/src/nltk_data"
 nltk.data.path.append(NLTK_DATA_PATH)
 
-# Download vader_lexicon if not already downloaded
+# Ensure vader_lexicon can be found
 try:
     nltk.data.find('sentiment/vader_lexicon')
 except LookupError:
+    # If not found, download it to the specified directory
     nltk.download('vader_lexicon', download_dir=NLTK_DATA_PATH)
-
+    
 # Configure Flask-Mail
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Using Gmail's SMTP server
 app.config['MAIL_PORT'] = 587  # Use port 587 for TLS
